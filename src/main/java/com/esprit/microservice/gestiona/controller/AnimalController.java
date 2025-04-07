@@ -184,6 +184,52 @@ public class AnimalController {
         return animal.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @PutMapping(value = "/updateWithImage/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<Object> updateAnimalWithImage(
+            @PathVariable Long id,
+            @RequestPart("animal") String animalJson,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+        try {
+            // Mapper pour gérer LocalDate
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+            // Convertir le JSON en objet Animal
+            Animal animal = objectMapper.readValue(animalJson, Animal.class);
+
+            // Vérifier la catégorie
+            if (animal.getCategorie() != null && animal.getCategorie().getId() != null) {
+                Long categorieId = animal.getCategorie().getId();
+
+                // Si une nouvelle image est fournie
+                if (imageFile != null && !imageFile.isEmpty()) {
+                    String uploadDir = "uploads/";
+                    Path uploadPath = Paths.get(uploadDir);
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+
+                    String fileName = imageFile.getOriginalFilename();
+                    Path filePath = uploadPath.resolve(fileName);
+                    Files.copy(imageFile.getInputStream(), filePath);
+
+                    animal.setImage(fileName); // Mettre à jour le nom de l'image
+                }
+
+                // Appeler le service pour faire la mise à jour
+                Animal updatedAnimal = animalService.updateAnimal(id, animal, categorieId);
+                return ResponseEntity.ok(updatedAnimal);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Erreur : Catégorie non spécifiée ou invalide.");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erreur lors de la mise à jour : " + e.getMessage());
+        }
+    }
 
     // Mettre à jour un animal en passant l'ID de la catégorie dans le corps de la requête
     @PutMapping("/update/{id}")

@@ -8,16 +8,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 public class AnimalService {
     private final AnimalRepository animalRepository;
     private final CategorieRepository categorieRepository;
+    private final EmailService emailService; // This should be injected
 
-    public AnimalService(AnimalRepository animalRepository, CategorieRepository categorieRepository) {
+    // Modify the constructor to include the EmailService
+    public AnimalService(AnimalRepository animalRepository, CategorieRepository categorieRepository, EmailService emailService) {
         this.animalRepository = animalRepository;
         this.categorieRepository = categorieRepository;
+        this.emailService = emailService; // Assign the injected EmailService
     }
+
     public Animal saveAnimal(Animal animal) {
         return animalRepository.save(animal);
     }
@@ -31,7 +34,14 @@ public class AnimalService {
         animal.setCategorie(categorie);
 
         // Sauvegarder l'animal dans la base de données
-        return animalRepository.save(animal);
+        Animal saved = animalRepository.save(animal);
+
+        // Send email after animal is added
+        String subject = "Confirmation de votre ajout";
+        String body = "Bonjour,\n\nVotre animal a bien été ajouté.\nMerci pour votre confiance.";
+        emailService.sendConfirmationEmail("abdessalemchaouch9217@gmail.com", subject, body); // Use the emailService here
+
+        return saved;
     }
 
     public List<Animal> getAllAnimals() {
