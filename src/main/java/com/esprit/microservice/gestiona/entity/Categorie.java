@@ -1,5 +1,6 @@
-package com.esprit.microservice.gestiona;
+package com.esprit.microservice.gestiona.entity;
 
+import com.esprit.microservice.gestiona.entity.Animal;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

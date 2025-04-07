@@ -1,5 +1,7 @@
-package com.esprit.microservice.gestiona;
+package com.esprit.microservice.gestiona.controller;
 
+import com.esprit.microservice.gestiona.entity.Categorie;
+import com.esprit.microservice.gestiona.service.CategorieService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

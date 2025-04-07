@@ -1,5 +1,7 @@
-package com.esprit.microservice.gestiona;
+package com.esprit.microservice.gestiona.service;
 
+import com.esprit.microservice.gestiona.entity.Categorie;
+import com.esprit.microservice.gestiona.repository.CategorieRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

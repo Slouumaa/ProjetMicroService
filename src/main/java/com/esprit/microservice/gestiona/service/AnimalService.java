@@ -1,5 +1,9 @@
-package com.esprit.microservice.gestiona;
+package com.esprit.microservice.gestiona.service;
 
+import com.esprit.microservice.gestiona.entity.Categorie;
+import com.esprit.microservice.gestiona.entity.Animal;
+import com.esprit.microservice.gestiona.repository.AnimalRepository;
+import com.esprit.microservice.gestiona.repository.CategorieRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +17,9 @@ public class AnimalService {
     public AnimalService(AnimalRepository animalRepository, CategorieRepository categorieRepository) {
         this.animalRepository = animalRepository;
         this.categorieRepository = categorieRepository;
+    }
+    public Animal saveAnimal(Animal animal) {
+        return animalRepository.save(animal);
     }
 
     public Animal addAnimal(Animal animal, Long categorieId) {
